@@ -1,0 +1,42 @@
+# ✅ Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# ✅ Virtual Environment
+.venv/
+env/
+venv/
+
+# ✅ IDEs / Editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# ✅ OS Junk
+.DS_Store
+Thumbs.db
+
+# ✅ Env & Secret Files
+# .env
+# .env.*
+
+# ✅ Migrations / Alembic (optional)
+alembic/versions/*.pyc
+alembic/versions/__pycache__/
+
+# ✅ Logs and dumps
+*.log
+*.db
+*.sqlite3
+
+# ✅ Coverage / Testing
+htmlcov/
+.tox/
+.coverage
+.cache
+pytest_cache/
+.pytest_cache/

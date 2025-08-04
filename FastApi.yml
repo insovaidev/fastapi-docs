@@ -1,0 +1,5 @@
+# All noted that need to build Python FastApi framework
+
+Activate .venv: source .venv/bin/activate
+
+Autolaod: uvicorn main:app --reload
