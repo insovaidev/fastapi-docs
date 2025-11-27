@@ -1,8 +1,12 @@
 # All noted that need to build Python FastApi framework
 
+## Road maps
+- Exception handling
+
 ## Cammand Line 
-Activate .venv: source .venv/bin/activate
-Autolaod: uvicorn main:app --reload
+source .venv/bin/activate
+
+uvicorn main:app --reload
 
 ## Routes 
 ## ✅ 1. What is a Route in FastAPI?
@@ -112,6 +116,15 @@ class User(BaseModel):
 @app.get("/users/{user_id}", response_model=User)
 def get_user(user_id: int):
     return {"id": user_id, "name": "Alice"}
+
+# How dose it work
+- Validation (Outgoing)
+ - Before sending the response to client, FastAPI run it through Pydatic User model
+ - If data the dose not match expect type, FastAPI will rise a validation error
+
+- Serialization
+ - Ensure python object turn into proper Json according ot Model
+
 ```
 
 ---
@@ -121,9 +134,15 @@ def get_user(user_id: int):
 ```python
 from typing import Optional
 
-@app.get("/items/")
+@app.get("/items")
 def get_item(q: Optional[str] = None):
     return {"q": q}
+
+def get_item(q: str = None):
+    return {"q": q}
+
+is the same q: str = None or q: Optional[str] = None
+
 ```
 
 ---
@@ -298,4 +317,19 @@ from utils.auth import verify_token
 ## ✅ Import multiple things
 ```
 from utils.auth import verify_token, 
+````
+
+
+## 🔥 Error Response for api design
 ```
+{
+  "code": "USER_NOT_FOUND",
+  "message": "User could not be found.",
+  "detail": "No user exists with ID 123.",
+  "errors": [
+    { "field": "user_id", "issue": "Must be a valid integer" }
+  ]
+}
+```
+
+## ✅ Exception hanlding 
