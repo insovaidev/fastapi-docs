@@ -19,7 +19,7 @@ async def list_users(skip: int = 0, limit: int = 10, db: AsyncSession = Depends(
 async def read_user(user_id: int, db: AsyncSession = Depends(get_db)):
     db_user = await repositories.get_user(db, user_id)
     if not db_user:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=404, detail="User not found, please enter valid user_id")
     return db_user
 
 @router.put("/{user_id}", response_model=schema.UserRead)

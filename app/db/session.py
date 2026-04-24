@@ -4,7 +4,12 @@ from sqlalchemy.orm import declarative_base
 from app.core.config import settings
 
 # Use create_async_engine for asynchronous support
-engine = create_async_engine(settings.database_url, echo=True)
+# Disabling echo and adding pool_pre_ping to speed up restarts and maintain connections
+engine = create_async_engine(
+    settings.database_url, 
+    echo=False,
+    pool_pre_ping=True
+)
 
 # Use async_sessionmaker for asynchronous sessions
 AsyncSessionLocal = async_sessionmaker(
@@ -12,7 +17,7 @@ AsyncSessionLocal = async_sessionmaker(
     class_=AsyncSession, 
     expire_on_commit=False,
     autocommit=False,
-    autoflush=False
+    autoflush=False,   
 )
 
 Base = declarative_base()
