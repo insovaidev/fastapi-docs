@@ -1,5 +1,6 @@
 from fastapi import APIRouter
-# from pydantic import 
+from fastapi.responses import HTMLResponse, JSONResponse
+from pydantic import BaseModel
 
 router = APIRouter(prefix="/tests", tags=["Tests"])
 
@@ -8,8 +9,6 @@ router = APIRouter(prefix="/tests", tags=["Tests"])
 def test_search_items(q: str = "", limit: int = 10):
     return {"query": q, "limit": limit}
 
-# Request body 
-from pydantic import BaseModel
 class Item(BaseModel):
     name: str
     price: float
@@ -43,8 +42,6 @@ class TestUser2(BaseModel):
 @router.get("/response-model-exclude-unset/{test_id}", response_model=TestUser2, response_model_exclude_unset=True)
 def get_response_model_exclude_unset(test_id: int):
     return TestUser2(id=test_id)
-
-from fastapi.responses import JSONResponse, HTMLResponse
 
 @router.get("/custom-json")
 def custom_json():

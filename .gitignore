@@ -40,3 +40,7 @@ htmlcov/
 .cache
 pytest_cache/
 .pytest_cache/
+
+# ✅ Docker
+# docker-compose.yml
+# Dockerfile

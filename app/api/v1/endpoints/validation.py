@@ -1,7 +1,9 @@
 from fastapi import APIRouter, Query, Depends, HTTPException
-from typing import Optional
-from pydantic import BaseModel, Field
 import json
+from enum import Enum
+from typing import Annotated, Optional
+
+from pydantic import BaseModel, Field
 
 
 router = APIRouter(prefix="/validations", tags=["Validations"])
@@ -29,7 +31,7 @@ def get_items(
 # Regex Validation
 @router.get("/validate")
 def validate_username(
-    username: str = Query(..., regex="^[a-zA-Z0-9_]{3,20}$")
+    username: str = Query(..., pattern="^[a-zA-Z0-9_]{3,20}$")
 ):
     return {"username": username}
 
@@ -86,9 +88,6 @@ def search(
     return {"q": q.strip()}
 # Prevents blank searches and trims spaces
 
-# Combining with Annotated (Python 3.9+ clean syntax)
-from typing import Annotated
-
 @router.get("/products")
 def get_products(
     q: Annotated[Optional[str], Query(min_length=3)] = None,
@@ -107,8 +106,6 @@ def get_range(
         raise HTTPException(400, "end must be greater than start")
     return {"range": (start, end)}
 
-# Enum validation for Query params
-from enum import Enum
 class SortOrder(str, Enum):
     asc = "asc"
     desc = "desc"

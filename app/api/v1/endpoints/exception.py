@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException
+
 router = APIRouter(prefix="/exceptions", tags=["Exceptions"])
 
 # Basic exception
