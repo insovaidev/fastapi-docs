@@ -87,7 +87,7 @@ FastAPI provides built-in interactive documentation:
 
 ```text
 app/
-├── api/          # API route definitions (v1)
+├── api/          # API route definitions (v1) : some api can call repository directly, others via service (if no complex business logic)
 ├── core/         # Global configuration & settings
 ├── db/           # Database connection & engine setup
 ├── models/       # SQLAlchemy database models

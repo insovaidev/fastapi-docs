@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 from dataclasses import dataclass
 
 from dotenv import load_dotenv
@@ -20,6 +21,30 @@ class Settings:
             f"mysql+aiomysql://{self.db_user}:{self.db_password}"
             f"@{self.db_host}:{self.db_port}/{self.db_name}"
         )
+
+    @property
+    def base_dir(self) -> Path:
+        return Path(__file__).resolve().parent.parent
+    
+    @property
+    def storage_dir(self) -> Path:
+        return self.base_dir / "storage"
+    
+    @property
+    def docs_dir(self) -> Path:
+        return self.storage_dir / "docs"
+    
+    @property
+    def uploads_dir(self) -> Path:
+        return self.storage_dir / "uploads"
+    
+    @property
+    def temp_dir(self) -> Path:
+        return self.storage_dir / "temp"
+    
+    @property
+    def images_dir(self) -> Path:
+        return self.storage_dir / "images"
 
 
 settings = Settings()
