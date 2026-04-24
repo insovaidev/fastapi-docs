@@ -2,8 +2,11 @@ from __future__ import annotations
 
 import csv
 import json
+import re
+from enum import StrEnum
 from datetime import datetime, timedelta
 from pathlib import Path
+from uuid import uuid4
 
 from app.core.config import settings
 
@@ -11,9 +14,27 @@ from app.core.config import settings
 BASE_DIR = settings.base_dir
 STORAGE_DIR = settings.storage_dir
 DOCS_DIR = settings.docs_dir
+CV_DIR = settings.cv_dir
 UPLOADS_DIR = settings.uploads_dir
 TEMP_DIR = settings.temp_dir
 IMAGES_DIR = settings.images_dir
+
+
+class StorageFolder(StrEnum):
+    CV = "cv"
+    DOCS = "docs"
+    UPLOADS = "uploads"
+    TEMP = "temp"
+    IMAGES = "images"
+
+
+STORAGE_ROOTS = {
+    StorageFolder.CV: CV_DIR,
+    StorageFolder.DOCS: DOCS_DIR,
+    StorageFolder.UPLOADS: UPLOADS_DIR,
+    StorageFolder.TEMP: TEMP_DIR,
+    StorageFolder.IMAGES: IMAGES_DIR,
+}
 
 
 def files():
@@ -48,8 +69,49 @@ def files():
 
 def ensure_storage_dirs():
     """Create the folders we use for file examples."""
-    for folder in (DOCS_DIR, UPLOADS_DIR, TEMP_DIR, IMAGES_DIR):
+    for folder in STORAGE_ROOTS.values():
         folder.mkdir(parents=True, exist_ok=True)
+
+
+def build_dated_storage_dir(folder: StorageFolder, now: datetime | None = None) -> Path:
+    """Build a dated storage path like storage/uploads/YYYY/MM/DD."""
+    ensure_storage_dirs()
+
+    current = now or datetime.now()
+    dated_dir = STORAGE_ROOTS[folder] / current.strftime("%Y") / current.strftime("%m") / current.strftime("%d")
+    dated_dir.mkdir(parents=True, exist_ok=True)
+    return dated_dir
+
+
+def sanitize_filename(filename: str) -> str:
+    """Normalize uploaded file names to a safe filesystem form."""
+    cleaned = Path(filename or "upload.bin").name.strip()
+    cleaned = re.sub(r"[^\w.\-]+", "_", cleaned)
+    return cleaned or "upload.bin"
+
+
+def build_unique_filename(filename: str) -> str:
+    """Prefix the incoming file name to avoid collisions."""
+    cleaned = sanitize_filename(filename)
+    return f"{uuid4().hex}_{cleaned}"
+
+
+def save_upload_bytes(folder: StorageFolder, filename: str, content: bytes) -> dict[str, str | int]:
+    """Persist uploaded bytes into the dated folder structure."""
+    target_dir = build_dated_storage_dir(folder)
+    target_name = build_unique_filename(filename)
+    file_path = target_dir / target_name
+    file_path.write_bytes(content)
+
+    return {
+        "filename": target_name,
+        "original_filename": sanitize_filename(filename),
+        "content_type": "",
+        "size": len(content),
+        "folder": folder.value,
+        "path": str(file_path),
+        "relative_path": str(file_path.relative_to(BASE_DIR)),
+    }
 
 
 def write_and_read_text_file() -> str:
@@ -78,14 +140,14 @@ def append_log_entry(message: str) -> str:
 
 def save_uploaded_file(filename: str, content: str) -> str:
     """Simulate storing an uploaded text file."""
-    file_path = UPLOADS_DIR / filename
+    file_path = build_dated_storage_dir(StorageFolder.UPLOADS) / sanitize_filename(filename)
     file_path.write_text(content, encoding="utf-8")
     return str(file_path)
 
 
 def save_uploaded_image(filename: str, content: bytes) -> str:
     """Simulate storing uploaded image bytes."""
-    file_path = IMAGES_DIR / filename
+    file_path = build_dated_storage_dir(StorageFolder.IMAGES) / sanitize_filename(filename)
     file_path.write_bytes(content)
     return str(file_path)
 

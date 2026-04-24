@@ -1,6 +1,6 @@
 import os
-from pathlib import Path
 from dataclasses import dataclass
+from pathlib import Path
 
 from dotenv import load_dotenv
 
@@ -24,7 +24,7 @@ class Settings:
 
     @property
     def base_dir(self) -> Path:
-        return Path(__file__).resolve().parent.parent
+        return Path(__file__).resolve().parent.parent.parent
     
     @property
     def storage_dir(self) -> Path:
@@ -33,6 +33,10 @@ class Settings:
     @property
     def docs_dir(self) -> Path:
         return self.storage_dir / "docs"
+
+    @property
+    def cv_dir(self) -> Path:
+        return self.storage_dir / "cv"
     
     @property
     def uploads_dir(self) -> Path:
