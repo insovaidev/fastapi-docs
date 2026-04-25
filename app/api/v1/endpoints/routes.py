@@ -303,7 +303,9 @@ def delete_product(product_id: Annotated[int, Path(..., gt=0)]):
     "/products/bulk-lookup",
     summary="Body model with a list of ids",
 )
-def bulk_lookup_products(payload: BulkLookup = Body(...)):
+def bulk_lookup_products(
+    payload: Annotated[BulkLookup, Body(...)]
+):
     # Request setup: POST /routes/products/bulk-lookup with JSON {"ids":[1,2,99]}
     # Learn this: a request body can be used for batch operations when query params become too complex.
     found_items = []
