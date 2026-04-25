@@ -5,6 +5,7 @@ from app.api.v1.endpoints import (
     requests,
     routes,
     schemas,
+    sqlalchemy,
     test,
     uploads,
     users,
@@ -21,4 +22,5 @@ api_router.include_router(exception.router)
 api_router.include_router(schemas.router)
 api_router.include_router(uploads.router)
 api_router.include_router(requests.router)
+api_router.include_router(sqlalchemy.router)
 api_router.include_router(routes.router)

@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-router = APIRouter(prefix="/schema")
+router = APIRouter(prefix="/schemas")
 
 @router.get("/")
 def schemas_get():
